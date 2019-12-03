@@ -1,0 +1,100 @@
+import Dialog from "react-native-dialog";
+import { StyleSheet, Text, View, Button, AsyncStorage, TextInput } from 'react-native';
+import React from 'react';
+import NoteItem from '../NoteItem'
+import ColorPicker from '../components/ColorPicker'
+
+export default class NoteDialog extends React.Component {
+  
+  constructor(props) {
+    super(props)
+    this.cancel=this.cancel.bind(this)
+    this.accept=this.accept.bind(this)
+    this.onChangeColor=this.onChangeColor.bind(this);
+    this.state={visible: this.props.visible, title: '', content: '', noteColor: '#fff'}
+  }
+
+  componentDidUpdate(prevProps) {
+    if(prevProps.visible !== this.props.visible) {
+      this.setState({visible: this.props.visible})
+    }
+  }
+
+  cancel() {
+    this.props.handleClose();
+  }
+
+  accept() {
+    note = new NoteItem(this.state.title, this.state.content, this.state.noteColor);
+    this.props.saveData(note);
+    this.props.handleClose();
+  }
+
+  onChangeTitle(e) {
+    this.setState({title: e});
+  }
+
+  onChangeContent(e) {
+    this.setState({content: e});
+  }
+
+  onChangeColor(color) {
+    this.setState({noteColor: color});
+  }
+
+  render() {
+    return (
+      <View>
+        <Dialog.Container visible={this.state.visible}>
+          <Dialog.Title>Note</Dialog.Title>
+          <Dialog.Description>
+            Add note
+          </Dialog.Description>
+          <TextInput 
+            style={styles.titleinput} 
+            onChangeText={(e) => {
+              this.onChangeTitle(e);
+            }} 
+            value={this.state.value}
+            placeholder="Title">
+          </TextInput>
+          <TextInput 
+            multiline={true}
+            style={styles.contentinput} 
+            onChangeText={(e) => {
+              this.onChangeContent(e);
+            }} 
+            value={this.state.value}
+            placeholder="Additional content">
+          </TextInput>
+          <ColorPicker noteColor={this.state.noteColor} onChangeColor={this.onChangeColor}></ColorPicker>
+          <Dialog.Button onPress={this.cancel} label="Cancel" />
+          <Dialog.Button onPress={this.accept} label="Accept" />
+        </Dialog.Container>
+      </View>
+    )
+  }
+
+}
+
+const styles = StyleSheet.create({
+  titleinput: {
+    borderColor: 'gray',
+    borderWidth: 2,
+    paddingLeft: 4,
+    height: 40,
+    marginBottom: 4,
+  },
+  contentinput: {
+    borderColor: 'lightgray',
+    borderWidth: 1,
+    paddingLeft: 4,
+    minHeight: 40,
+    marginBottom: 4, 
+  },
+  colorpicker: {
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center'
+  },
+});
