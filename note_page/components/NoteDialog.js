@@ -51,7 +51,7 @@ export default class NoteDialog extends React.Component {
             Add note
           </Dialog.Description>
           <TextInput 
-            style={styles.titleinput} 
+            style={styles.titleInput} 
             onChangeText={(e) => {
               this.onChangeTitle(e);
             }} 
@@ -60,7 +60,7 @@ export default class NoteDialog extends React.Component {
           </TextInput>
           <TextInput 
             multiline={true}
-            style={styles.contentinput} 
+            style={styles.contentInput} 
             onChangeText={(e) => {
               this.onChangeContent(e);
             }} 
@@ -78,23 +78,18 @@ export default class NoteDialog extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  titleinput: {
+  titleInput: {
     borderColor: 'gray',
     borderWidth: 2,
     paddingLeft: 4,
-    height: 40,
+    minHeight: 40,
     marginBottom: 4,
   },
-  contentinput: {
+  contentInput: {
     borderColor: 'lightgray',
     borderWidth: 1,
     paddingLeft: 4,
     minHeight: 40,
     marginBottom: 4, 
-  },
-  colorpicker: {
-    flexDirection: 'row',
-    alignContent: 'center',
-    alignItems: 'center'
   },
 });
