@@ -17,13 +17,11 @@ export default function NoteScreen() {
   });
 
   useEffect(() => {
-    console.log("useeffect")
     _getAllObjects();
   }, [])
 
   const _storeData = (data) => {
     AsyncStorage.getAllKeys().then((res) => {
-      const nextKey = String(res.length);
       try {
         AsyncStorage.setItem(data.title, JSON.stringify(data)).then(_getAllObjects);
       } catch(error) {
@@ -33,16 +31,7 @@ export default function NoteScreen() {
 
   }
 
-  const _getAllKeys = () => {
-    try {
-      AsyncStorage.getAllKeys().then((res) => console.log(res));
-    } catch(error) {
-      console.log(error);
-    }
-  }
-
   const _getAllObjects = () => {
-    setAllObjects([])
     try {
       AsyncStorage.getAllKeys().then((res) => {
         var tempAllObjects = [];  
@@ -67,18 +56,9 @@ export default function NoteScreen() {
     }
   }
 
-  const _clearData = (key) => {
+  const _clearItem = (key) => {
     try {
-      console.log(key);
       AsyncStorage.removeItem(key).then(_getAllObjects);
-    } catch(error) {
-      console.log(error);
-    }
-  }
-
-  const _clearAll = () => {
-    try {
-      AsyncStorage.clear().then(console.log('Done'));
     } catch(error) {
       console.log(error);
     }
@@ -88,7 +68,7 @@ export default function NoteScreen() {
     text: 'Delete',
     color: 'red',
     backgroundColor: '#fff',
-    onPress: () => { _clearData(item.title) }
+    onPress: () => { _clearItem(item.title) }
   }];
 
   function handleModalClose() {
@@ -104,12 +84,9 @@ export default function NoteScreen() {
 
   return (
     <View style={styles.container}>
-      <Button title="Save" onPress={() => {
+      <Button title="Add" onPress={() => {
         setShowDialog(true);
       }}></Button>
-      <Button title="Clear" onPress={_clearAll}></Button>
-      <Button title="Get All Keys" onPress={_getAllKeys}></Button>
-      <Button title="Get All Objects" onPress={_getAllObjects}></Button>
       <FlatList
           data={allObjects}
           keyExtractor={item => item.title}
@@ -122,10 +99,7 @@ export default function NoteScreen() {
                 showModal: true,
                 note: item
               });
-              console.log(modalInfo.showModal, 'modalinfo')
-              console.log(modalInfo.note, 'modalinfo')
               }}>
-              {console.log(item.style.backgroundColor)}
               <Card containerStyle={{backgroundColor: item.style.backgroundColor}}>
                 <View style={styles.flatList}>
                   <Text style={{fontSize: 18}}>{item.title}</Text>
