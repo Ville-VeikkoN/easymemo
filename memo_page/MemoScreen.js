@@ -14,10 +14,7 @@ export default class MemoScreene extends React.Component {
   render() {
     const {navigate} = this.props.navigation;
     return (
-      <Button
-        title="Go to Jane's profile"
-        onPress={() => navigate('Profile', {name: 'Jane'})}
-      />
+      <Text>Memos coming soon</Text>
     );
   }
 
