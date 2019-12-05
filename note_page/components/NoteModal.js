@@ -25,7 +25,7 @@ export default class MyModal extends React.Component {
 
           <Card title={note.title} containerStyle={{backgroundColor: note.style.backgroundColor}}>
             <View style={styles.modalcontent}>
-              <Text style={{fontSize:20}}>Moikka</Text>
+              <Text style={{fontSize:20}}>{note.content}</Text>
               <TouchableOpacity onPress={() => this.props.handleClose()}>
                 <Text style={{fontSize:18, color:'blue'}}>close</Text>
               </TouchableOpacity>
