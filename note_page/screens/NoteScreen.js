@@ -8,7 +8,13 @@ import { object } from 'prop-types';
 import NoteItem from '../NoteItem';
 
 export default function NoteScreen() {
+  /*
 
+
+      REACT-NATIVE-SWIPEOUT IS DEPRECATED, USE react-native-swipe-list-view
+
+
+  */
   const [showDialog, setShowDialog] = React.useState(false);
   const [allObjects, setAllObjects] = React.useState([])
   const [modalInfo, setModalInfo] = React.useState({
@@ -21,24 +27,31 @@ export default function NoteScreen() {
   }, [])
 
   const _storeData = (data) => {
-    AsyncStorage.getAllKeys().then((res) => {
-      try {
-        AsyncStorage.setItem(data.title, JSON.stringify(data)).then(_getAllObjects);
-      } catch(error) {
-        console.log(error);
-      }
-    })
-
+    try {
+      AsyncStorage.getItem(data.title)
+        .then(res => {
+          if(res != null) {
+            alert('Note with same title already exists')
+          } else {
+            AsyncStorage.setItem(data.title, JSON.stringify(data)).then(_getAllObjects).then(res => console.log(res));
+          }
+      })
+    } catch(error) {
+      console.log(error);
+    }
   }
 
   const _getAllObjects = () => {
+    var tempAllObjects = [];  
     try {
       AsyncStorage.getAllKeys().then((res) => {
-        var tempAllObjects = [];  
+        if(res.length == 0) {
+          setAllObjects(tempAllObjects);
+        }
         for(key of res) {
           AsyncStorage.getItem(key)
             .then((item) => {
-              tempAllObjects.push(JSON.parse(item))
+              tempAllObjects.push(JSON.parse(item));
               if(tempAllObjects.length == res.length) {
                 tempAllObjects.sort(function(a,b) {
                   if(a.date <  b.date) {
@@ -47,10 +60,9 @@ export default function NoteScreen() {
                 })
                 setAllObjects(tempAllObjects);
               }
-            })
+          })
         }
       });
-
     } catch(error) {
       console.log(error);
     }
