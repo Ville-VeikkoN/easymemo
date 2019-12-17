@@ -7,11 +7,27 @@ import ColorPicker from '../components/ColorPicker'
 export default class NoteDialog extends React.Component {
   
   constructor(props) {
-    super(props)
-    this.cancel=this.cancel.bind(this)
-    this.accept=this.accept.bind(this)
+    super(props);
+    this.cancel=this.cancel.bind(this);
+    this.accept=this.accept.bind(this);
     this.onChangeColor=this.onChangeColor.bind(this);
-    this.state={visible: this.props.visible, title: '', content: '', noteColor: '#fff'}
+    const editableNote = this.props.editableNote;
+    if(editableNote) {
+      this.state={ 
+        visible: this.props.visible,
+        title: editableNote.title,
+        content: editableNote.content,
+        noteColor: editableNote.style.backgroundColor,
+        editableNote: editableNote,
+      }
+    } else {
+      this.state={
+        visible: this.props.visible,
+        title: '',
+        content: '',
+        noteColor: '#fff'
+      }
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -25,9 +41,15 @@ export default class NoteDialog extends React.Component {
   }
 
   accept() {
-    note = new NoteItem(this.state.title, this.state.content, this.state.noteColor);
-    this.props.saveData(note);
-    this.props.handleClose();
+    if(this.state.title != '') {
+      note = new NoteItem(this.state.title, this.state.content, this.state.noteColor);
+      this.props.saveData(note);
+      this.props.handleClose();
+    }
+  }
+
+  acceptEdit() {
+    console.log('mergeUpdate')
   }
 
   onChangeTitle(e) {
@@ -43,36 +65,70 @@ export default class NoteDialog extends React.Component {
   }
 
   render() {
-    return (
-      <View>
-        <Dialog.Container visible={this.state.visible}>
-          <Dialog.Title>Note</Dialog.Title>
-          <Dialog.Description>
-            Add note
-          </Dialog.Description>
-          <TextInput 
-            style={styles.titleInput} 
-            onChangeText={(e) => {
-              this.onChangeTitle(e);
-            }} 
-            value={this.state.value}
-            placeholder="Title">
-          </TextInput>
-          <TextInput 
-            multiline={true}
-            style={styles.contentInput} 
-            onChangeText={(e) => {
-              this.onChangeContent(e);
-            }} 
-            value={this.state.value}
-            placeholder="Additional content">
-          </TextInput>
-          <ColorPicker noteColor={this.state.noteColor} onChangeColor={this.onChangeColor}></ColorPicker>
-          <Dialog.Button onPress={this.cancel} label="Cancel" />
-          <Dialog.Button onPress={this.accept} label="Accept" />
-        </Dialog.Container>
-      </View>
-    )
+    if(this.state.editableNote) {
+      return (
+        <View>
+          <Dialog.Container visible={this.state.visible}>
+            <Dialog.Title>Note</Dialog.Title>
+            <Dialog.Description>
+              Edit note
+            </Dialog.Description>
+            <TextInput 
+              style={styles.titleInput} 
+              onChangeText={(e) => {
+                this.onChangeTitle(e);
+              }} 
+              value={this.state.title}
+              placeholder="Title">
+            </TextInput>
+            <TextInput 
+              multiline={true}
+              style={styles.contentInput} 
+              onChangeText={(e) => {
+                this.onChangeContent(e);
+              }} 
+              value={this.state.content}
+              placeholder="Additional content">
+            </TextInput>
+            <ColorPicker noteColor={this.state.noteColor} onChangeColor={this.onChangeColor}></ColorPicker>
+            <Dialog.Button onPress={this.cancel} label="Cancel" />
+            <Dialog.Button onPress={this.acceptEdit} label="Accept" />
+          </Dialog.Container>
+        </View>
+      )
+    } else {
+      return (
+        <View>
+          <Dialog.Container visible={this.state.visible}>
+            <Dialog.Title>Note</Dialog.Title>
+            <Dialog.Description>
+              Add note
+            </Dialog.Description>
+            <TextInput 
+              style={styles.titleInput} 
+              onChangeText={(e) => {
+                this.onChangeTitle(e);
+              }} 
+              value={this.state.title}
+              placeholder="Title">
+            </TextInput>
+            <TextInput 
+              multiline={true}
+              style={styles.contentInput} 
+              onChangeText={(e) => {
+                this.onChangeContent(e);
+              }} 
+              value={this.state.content}
+              placeholder="Additional content">
+            </TextInput>
+            <ColorPicker noteColor={this.state.noteColor} onChangeColor={this.onChangeColor}></ColorPicker>
+            <Dialog.Button onPress={this.cancel} label="Cancel" />
+            <Dialog.Button onPress={this.accept} label="Accept" />
+          </Dialog.Container>
+        </View>
+      )
+    }
+
   }
 
 }

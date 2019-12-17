@@ -15,7 +15,10 @@ export default function NoteScreen() {
 
 
   */
-  const [showDialog, setShowDialog] = React.useState(false);
+  const [showDialog, setShowDialog] = React.useState({
+    showDialog: false,
+    editableNote: null
+  });
   const [allObjects, setAllObjects] = React.useState([])
   const [modalInfo, setModalInfo] = React.useState({
     showModal: false,
@@ -23,6 +26,11 @@ export default function NoteScreen() {
   });
 
   useEffect(() => {
+    // try {
+    //   AsyncStorage.clear()
+    // } catch(error) {
+    //   console.log(error);
+    // }
     _getAllObjects();
   }, [])
 
@@ -33,7 +41,9 @@ export default function NoteScreen() {
           if(res != null) {
             alert('Note with same title already exists')
           } else {
-            AsyncStorage.setItem(data.title, JSON.stringify(data)).then(_getAllObjects).then(res => console.log(res));
+            AsyncStorage.setItem(data.title, JSON.stringify(data))
+              .then(_getAllObjects)
+              .then(res => console.log(res));
           }
       })
     } catch(error) {
@@ -44,24 +54,25 @@ export default function NoteScreen() {
   const _getAllObjects = () => {
     var tempAllObjects = [];  
     try {
-      AsyncStorage.getAllKeys().then((res) => {
-        if(res.length == 0) {
-          setAllObjects(tempAllObjects);
-        }
-        for(key of res) {
-          AsyncStorage.getItem(key)
-            .then((item) => {
-              tempAllObjects.push(JSON.parse(item));
-              if(tempAllObjects.length == res.length) {
-                tempAllObjects.sort(function(a,b) {
-                  if(a.date <  b.date) {
-                    return -1;
-                  }
-                })
-                setAllObjects(tempAllObjects);
-              }
-          })
-        }
+      AsyncStorage.getAllKeys()
+        .then((res) => {
+          if(res.length == 0) {
+            setAllObjects(tempAllObjects);
+          }
+          for(key of res) {
+            AsyncStorage.getItem(key)
+              .then((item) => {
+                tempAllObjects.push(JSON.parse(item));
+                if(tempAllObjects.length == res.length) {
+                  tempAllObjects.sort(function(a,b) {
+                    if(a.date <  b.date) {
+                      return -1;
+                    }
+                  })
+                  setAllObjects(tempAllObjects);
+                }
+            })
+          }
       });
     } catch(error) {
       console.log(error);
@@ -70,18 +81,33 @@ export default function NoteScreen() {
 
   const _clearItem = (key) => {
     try {
-      AsyncStorage.removeItem(key).then(_getAllObjects);
+      AsyncStorage.removeItem(key)
+        .then(_getAllObjects);
     } catch(error) {
       console.log(error);
     }
   }
 
-  let swipeBtns = (item) => [{
+  let swipeBtns = (item) => [
+    {
+      text: 'Edit',
+      color: 'green',
+      backgroundColor: '#fff',
+      onPress: () => {
+        console.log(item)
+        setShowDialog({
+          showDialog: true,
+          editableNote: item,
+        })
+      }
+    },
+    {
     text: 'Delete',
     color: 'red',
     backgroundColor: '#fff',
     onPress: () => { _clearItem(item.title) }
-  }];
+    },
+];
 
   function handleModalClose() {
     setModalInfo({
@@ -91,13 +117,19 @@ export default function NoteScreen() {
   }
 
   function handleDialogClose() {
-    setShowDialog(false);
+    setShowDialog({
+      ...showDialog,
+      showDialog: false,
+    });
   }
 
   return (
     <View style={styles.container}>
       <Button title="Add" onPress={() => {
-        setShowDialog(true);
+        setShowDialog({
+          showDialog: true,
+          editableNote: null
+        });
       }}></Button>
       <FlatList
           data={allObjects}
@@ -121,8 +153,18 @@ export default function NoteScreen() {
           </Swipeout>
           }
       />
-      {modalInfo.showModal && <NoteModal note={modalInfo.note} handleClose={handleModalClose}></NoteModal>}
-      {showDialog && <NoteDialog handleClose={handleDialogClose} saveData={_storeData} visible={showDialog}></NoteDialog>}
+      {modalInfo.showModal && (
+        <NoteModal 
+          note={modalInfo.note} 
+          handleClose={handleModalClose}/>
+      )}
+      {showDialog.showDialog && (
+        <NoteDialog 
+          handleClose={handleDialogClose} 
+          saveData={_storeData} 
+          visible={showDialog.showDialog}
+          editableNote={showDialog.editableNote}/>
+      )}
     </View>
   );
 }

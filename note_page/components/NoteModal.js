@@ -14,7 +14,6 @@ export default class MyModal extends React.Component {
     const note = this.props.note;
     return (
       <View style={styles.container}>
-        {console.log(note)}
         <Modal
           isVisible={true}
           animationIn='fadeIn'
@@ -22,7 +21,6 @@ export default class MyModal extends React.Component {
           hideModalContentWhileAnimating={true}
           backdropTransitionOutTiming={0}
           onBackdropPress={() => this.props.handleClose()}>
-
           <Card title={note.title} containerStyle={{backgroundColor: note.style.backgroundColor}}>
             <View style={styles.modalcontent}>
               <Text style={{fontSize:20}}>{note.content}</Text>

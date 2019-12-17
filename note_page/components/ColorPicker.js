@@ -9,7 +9,7 @@ export default class ColorPicker extends React.Component {
   }
 
   colorOptions= [
-    color1= this.props.noteColor,
+    color1= '#fff',
     color2= '#ff7eb9',
     color3= '#ff65a3',
     color4= '#7afcff',
