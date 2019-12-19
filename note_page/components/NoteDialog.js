@@ -80,7 +80,6 @@ export default class NoteDialog extends React.Component {
             </Dialog.Description>
             <TextInput 
               style={styles.titleInput} 
-              editable={false}
               onChangeText={(e) => {
                 this.onChangeTitle(e);
                 console.log(this.state.title)
