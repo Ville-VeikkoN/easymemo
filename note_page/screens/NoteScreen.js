@@ -62,10 +62,8 @@ export default function NoteScreen() {
     try {
       AsyncStorage.getItem('notes')
         .then((res) => {
-          if(res != null) {
-            list = JSON.parse(res)
-            setAllObjects(list.list);
-          } 
+          list = JSON.parse(res)
+          setAllObjects(list.list);
           // for(key of res) {
           //   AsyncStorage.getItem(key)
           //     .then((item) => {
@@ -98,14 +96,20 @@ export default function NoteScreen() {
     }
   }
 
-  const _mergeItem = (key, item) => {
+  function getIndex(item) {
+    return allObjects.findIndex(obj => obj.title === item.title);
+  }
+
+  const _mergeItem = (item) => {
+    tempAllObjects = allObjects;
+    index = getIndex(item);
+    storedList = {'list': []}
+    //storedList.list = 
+    tempAllObjects.splice(index,1,item);
+    storedList.list = tempAllObjects;
     try {
-      AsyncStorage.mergeItem(key, JSON.stringify(item))
-        .then(() => {
-          // if(key !== item.key) {
-          //   AsyncStorage.removeItem(key);
-          // }
-        })
+      console.log(storedList);
+      AsyncStorage.mergeItem('notes',JSON.stringify(storedList))
         .then(_getAllObjects);
     } catch(error) {
       console.log(error);

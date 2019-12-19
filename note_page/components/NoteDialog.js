@@ -52,7 +52,7 @@ export default class NoteDialog extends React.Component {
   acceptEdit() {
     if(this.state.title != '') {
       note = new NoteItem(this.state.title, this.state.content, this.state.noteColor);
-      this.props.editData(this.state.editableNote.title, note);
+      this.props.editData(note);
       this.props.handleClose();
     }
   }
