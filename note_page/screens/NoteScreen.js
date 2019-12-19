@@ -88,13 +88,21 @@ export default function NoteScreen() {
     }
   }
 
+  const _mergeItem = () => {
+    try {
+      AsyncStorage.mergeItem(key)
+        .then(_getAllObjects);
+    } catch(error) {
+      console.log(error);
+    }
+  }
+
   let swipeBtns = (item) => [
     {
       text: 'Edit',
       color: 'green',
       backgroundColor: '#fff',
       onPress: () => {
-        console.log(item)
         setShowDialog({
           showDialog: true,
           editableNote: item,
@@ -102,12 +110,12 @@ export default function NoteScreen() {
       }
     },
     {
-    text: 'Delete',
-    color: 'red',
-    backgroundColor: '#fff',
-    onPress: () => { _clearItem(item.title) }
+      text: 'Delete',
+      color: 'red',
+      backgroundColor: '#fff',
+      onPress: () => { _clearItem(item.title) }
     },
-];
+  ];
 
   function handleModalClose() {
     setModalInfo({
