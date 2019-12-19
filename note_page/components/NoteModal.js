@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, ActivityIndicator, TouchableOpacity, FlatList, Button, Image } from 'react-native';
-import { Card } from 'react-native-elements';
+import { Card, CheckBox } from 'react-native-elements';
 import Modal from 'react-native-modal';
 import moment from 'moment';
 

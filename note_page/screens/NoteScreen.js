@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, Text, View, Button, AsyncStorage, FlatList, TextInput, ScrollView, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Button, AsyncStorage, FlatList, TextInput, ScrollView, TouchableOpacity, CheckBox } from 'react-native';
 import NoteDialog from '../components/NoteDialog'
 import NoteModal from '../components/NoteModal'
 import { Card } from 'react-native-elements';
@@ -104,7 +104,6 @@ export default function NoteScreen() {
     tempAllObjects = allObjects;
     index = getIndex(item);
     storedList = {'list': []}
-    //storedList.list = 
     tempAllObjects.splice(index,1,item);
     storedList.list = tempAllObjects;
     try {
@@ -173,7 +172,11 @@ export default function NoteScreen() {
               }}>
               <Card containerStyle={{backgroundColor: item.style.backgroundColor}}>
                 <View style={styles.flatList}>
-                  <Text style={{fontSize: 18}}>{item.title}</Text>
+                  <Text style={item.checked ? {textDecorationLine: 'line-through', fontSize: 18} : {fontSize: 18}}>{item.title}</Text>
+                  <CheckBox value={item.checked} onValueChange={() => {
+                    item.checked = !item.checked
+                    _mergeItem(item)
+                  }}/>
                 </View>
               </Card>
             </TouchableOpacity>
