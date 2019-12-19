@@ -26,11 +26,11 @@ export default function NoteScreen() {
   });
 
   useEffect(() => {
-    // try {
-    //   AsyncStorage.clear()
-    // } catch(error) {
-    //   console.log(error);
-    // }
+    //  try {
+    //    AsyncStorage.clear()
+    //  } catch(error) {
+    //    console.log(error);
+    //  }
     _getAllObjects();
   }, [])
 
@@ -88,9 +88,14 @@ export default function NoteScreen() {
     }
   }
 
-  const _mergeItem = () => {
+  const _mergeItem = (key, item) => {
     try {
-      AsyncStorage.mergeItem(key)
+      AsyncStorage.mergeItem(key, JSON.stringify(item))
+        .then(() => {
+          // if(key !== item.key) {
+          //   AsyncStorage.removeItem(key);
+          // }
+        })
         .then(_getAllObjects);
     } catch(error) {
       console.log(error);
@@ -171,7 +176,8 @@ export default function NoteScreen() {
           handleClose={handleDialogClose} 
           saveData={_storeData} 
           visible={showDialog.showDialog}
-          editableNote={showDialog.editableNote}/>
+          editableNote={showDialog.editableNote}
+          editData={_mergeItem}/>
       )}
     </View>
   );

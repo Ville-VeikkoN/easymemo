@@ -10,6 +10,7 @@ export default class NoteDialog extends React.Component {
     super(props);
     this.cancel=this.cancel.bind(this);
     this.accept=this.accept.bind(this);
+    this.acceptEdit=this.acceptEdit.bind(this);
     this.onChangeColor=this.onChangeColor.bind(this);
     const editableNote = this.props.editableNote;
     if(editableNote) {
@@ -49,7 +50,11 @@ export default class NoteDialog extends React.Component {
   }
 
   acceptEdit() {
-    console.log('mergeUpdate')
+    if(this.state.title != '') {
+      note = new NoteItem(this.state.title, this.state.content, this.state.noteColor);
+      this.props.editData(this.state.editableNote.title, note);
+      this.props.handleClose();
+    }
   }
 
   onChangeTitle(e) {
@@ -75,8 +80,10 @@ export default class NoteDialog extends React.Component {
             </Dialog.Description>
             <TextInput 
               style={styles.titleInput} 
+              editable={false}
               onChangeText={(e) => {
                 this.onChangeTitle(e);
+                console.log(this.state.title)
               }} 
               value={this.state.title}
               placeholder="Title">
