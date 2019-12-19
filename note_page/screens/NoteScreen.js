@@ -27,23 +27,29 @@ export default function NoteScreen() {
 
   useEffect(() => {
     //  try {
-    //    AsyncStorage.clear()
-    //  } catch(error) {
-    //    console.log(error);
-    //  }
+    //   AsyncStorage.clear()
+    // } catch(error) {
+    //   console.log(error);
+    // }
     _getAllObjects();
   }, [])
 
   const _storeData = (data) => {
+    storedList = {'list': []}
     try {
-      AsyncStorage.getItem(data.title)
+      list = allObjects;
+      list.push(data);
+      AsyncStorage.getItem('notes')
         .then(res => {
+          storedList.list = list;
+          console.log(JSON.stringify(list))
+
           if(res != null) {
-            alert('Note with same title already exists')
-          } else {
-            AsyncStorage.setItem(data.title, JSON.stringify(data))
+            AsyncStorage.mergeItem('notes', JSON.stringify(storedList))
               .then(_getAllObjects)
-              .then(res => console.log(res));
+          } else {
+            AsyncStorage.setItem('notes', JSON.stringify(storedList))
+              .then(setAllObjects(list))
           }
       })
     } catch(error) {
@@ -52,39 +58,43 @@ export default function NoteScreen() {
   }
 
   const _getAllObjects = () => {
-    var tempAllObjects = [];  
+    list = [];
     try {
-      AsyncStorage.getAllKeys()
+      AsyncStorage.getItem('notes')
         .then((res) => {
-          if(res.length == 0) {
-            setAllObjects(tempAllObjects);
-          }
-          for(key of res) {
-            AsyncStorage.getItem(key)
-              .then((item) => {
-                tempAllObjects.push(JSON.parse(item));
-                if(tempAllObjects.length == res.length) {
-                  tempAllObjects.sort(function(a,b) {
-                    if(a.date <  b.date) {
-                      return -1;
-                    }
-                  })
-                  setAllObjects(tempAllObjects);
-                }
-            })
-          }
+          if(res != null) {
+            list = JSON.parse(res)
+            setAllObjects(list.list);
+          } 
+          // for(key of res) {
+          //   AsyncStorage.getItem(key)
+          //     .then((item) => {
+          //       tempAllObjects.push(JSON.parse(item));
+          //       if(tempAllObjects.length == res.length) {
+          //         tempAllObjects.sort(function(a,b) {
+          //           if(a.date <  b.date) {
+          //             return -1;
+          //           }
+          //         })
+          //         setAllObjects(tempAllObjects);
+          //       }
+          //   })
+          // }
       });
     } catch(error) {
       console.log(error);
     }
   }
 
-  const _clearItem = (key) => {
+  const _clearItem = (itemToDelete) => {
+    tempAllObjects = allObjects;
+    storedList = {'list': []}
+    storedList.list = tempAllObjects.filter(item => item.title !== itemToDelete.title);
     try {
-      AsyncStorage.removeItem(key)
+      AsyncStorage.mergeItem('notes', JSON.stringify(storedList))
         .then(_getAllObjects);
     } catch(error) {
-      console.log(error);
+      console.log(error)
     }
   }
 
@@ -118,7 +128,7 @@ export default function NoteScreen() {
       text: 'Delete',
       color: 'red',
       backgroundColor: '#fff',
-      onPress: () => { _clearItem(item.title) }
+      onPress: () => { _clearItem(item) }
     },
   ];
 
