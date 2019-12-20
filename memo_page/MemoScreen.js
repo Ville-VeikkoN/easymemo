@@ -23,7 +23,15 @@ export default function MemoScreen() {
           .then(res => {
             if(res.granted) {
               Calendar.getCalendarsAsync()
-                .then(res => console.log(res));
+                .then(res => {
+                  console.log(res)
+                  // for(cal of res) {
+                  //   if(cal.title == 'My Calendar') {
+                  //     Calendar.deleteCalendarAsync(cal.id);
+                  //     console.log('deleted');
+                  //   }
+                  // }
+                });
             }
           })
         })
