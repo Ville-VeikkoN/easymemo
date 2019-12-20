@@ -1,10 +1,13 @@
 import React, { useEffect } from 'react';
 import { StyleSheet, Text, View, Button, AsyncStorage } from 'react-native';
 import * as Calendar from 'expo-calendar';
+import DatePicker from 'react-native-datepicker'
 
 export default function MemoScreen() {
 
-  const [calendarId, setCalendarId] = React.useState('null');
+  const [calendarId, setCalendarId] = React.useState('');
+  const [startDate, setStartDate] = React.useState(new Date());
+  const [endDate, setEndDate] = React.useState(new Date());
 
   useEffect(() => {
     try{
@@ -20,7 +23,7 @@ export default function MemoScreen() {
           .then(res => {
             if(res.granted) {
               Calendar.getCalendarsAsync()
-                // .then(res => console.log(res));
+                .then(res => console.log(res));
             }
           })
         })
@@ -65,9 +68,91 @@ export default function MemoScreen() {
     }
   }
 
+  function getEvents() {
+    Calendar.getEventsAsync([calendarId], startDate, endDate)
+      .then(res => console.log(res))
+  }
+
+  function addEvent() {
+    details = (
+      {
+        'title': 'Event',
+        'startDate': startDate,
+        'endDate': endDate,
+      }
+    )
+    Calendar.createEventAsync(calendarId, {
+      title: 'my new event',
+      startDate: new Date(),
+      endDate: new Date(),
+      accessLevel: "default",
+    })
+  }
+
+  function renderStartDatePicker() {
+    return(
+      <DatePicker
+        style={{width: 200}}
+        date={startDate}
+        mode="date"
+        format="DD-MM-YYYY"
+        confirmBtnText="Confirm"
+        cancelBtnText="Cancel"
+        customStyles={{
+          dateIcon: {
+            position: 'absolute',
+            left: 0,
+            top: 4,
+            marginLeft: 0
+          },
+          dateInput: {
+            marginLeft: 36
+          }
+        }}
+        onDateChange={(date) => {setStartDate(date)}}
+      />
+    )
+  }
+
+  function renderEndDatePicker() {
+    return(
+      <DatePicker
+        style={{width: 200}}
+        date={endDate}
+        mode="date"
+        format="DD-MM-YYYY"
+        confirmBtnText="Confirm"
+        cancelBtnText="Cancel"
+        customStyles={{
+          dateIcon: {
+            position: 'absolute',
+            left: 0,
+            top: 4,
+            marginLeft: 0
+          },
+          dateInput: {
+            marginLeft: 36
+          }
+        }}
+        onDateChange={(date) => {
+          setEndDate(date);
+          getEvents();
+        }}
+      />
+    )
+  }
+
   return (
-    <View>
+    <View style={{display:'flex'}}>
       <Button title='press' onPress={() => console.log(calendarId)}></Button>
+      <Button title='add' onPress={() => {
+        console.log('add calendar Event')
+        addEvent();
+      }}></Button>
+      <View style={{display: 'flex', flexDirection: 'row'}}>
+        {renderStartDatePicker()}
+        {renderEndDatePicker()}
+      </View>
     </View>
   );
 }

@@ -26,11 +26,13 @@ export default function NoteScreen() {
   });
 
   useEffect(() => {
-    //  try {
-    //   AsyncStorage.clear()
-    // } catch(error) {
-    //   console.log(error);
-    // }
+    try {
+     // AsyncStorage.clear()
+      AsyncStorage.getAllKeys()
+        .then(res => console.log(res))
+    } catch(error) {
+      console.log(error);
+    }
     _getAllObjects();
   }, [])
 
@@ -62,8 +64,10 @@ export default function NoteScreen() {
     try {
       AsyncStorage.getItem('notes')
         .then((res) => {
-          list = JSON.parse(res)
-          setAllObjects(list.list);
+          if(res !== null) {
+            list = JSON.parse(res)
+            setAllObjects(list.list);
+          }
           // for(key of res) {
           //   AsyncStorage.getItem(key)
           //     .then((item) => {
