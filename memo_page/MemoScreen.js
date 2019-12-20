@@ -4,6 +4,8 @@ import * as Calendar from 'expo-calendar';
 
 export default function MemoScreen() {
 
+  const [calendarId, setCalendarId] = React.useState('null');
+
   useEffect(() => {
     try{
       AsyncStorage.getItem('calendarID')
@@ -11,25 +13,27 @@ export default function MemoScreen() {
           if(res == null) {
             createCalendar();
           }
+          setCalendarId(res);
+        })
+        .then(() => {
+          Calendar.requestPermissionsAsync()
+          .then(res => {
+            if(res.granted) {
+              Calendar.getCalendarsAsync()
+                // .then(res => console.log(res));
+            }
+          })
+        })
+        .then(() => {
+
         })
     } catch(e) {
       console.log(e);
     }
-    Calendar.requestPermissionsAsync()
-      .then(res => {
-        console.log(res)
-        if(res.granted) {
-          Calendar.getCalendarsAsync()
-            .then(res => console.log(res));
-        }
-      })
+
   },[])
 
-  async function deleteCalendar() {
-    Calendar.deleteCalendarAsync(4);
-    Calendar.deleteCalendarAsync(5);
-    Calendar.deleteCalendarAsync(6);
-
+  async function getCalendarEvents() {
   }
 
   async function createCalendar() {
@@ -55,12 +59,15 @@ export default function MemoScreen() {
     try {
       let calendarID = await Calendar.createCalendarAsync(details);
       AsyncStorage.setItem('calendarID', calendarID);
+      setCalendarId(calendarID);
     } catch(error) {
       console.log(error);
     }
   }
 
   return (
-    <Text>Memos coming soon</Text>
+    <View>
+      <Button title='press' onPress={() => console.log(calendarId)}></Button>
+    </View>
   );
 }
