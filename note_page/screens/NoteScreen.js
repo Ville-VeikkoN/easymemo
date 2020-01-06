@@ -44,7 +44,7 @@ export default function NoteScreen() {
       AsyncStorage.getItem('notes')
         .then(res => {
           storedList.list = list;
-          if(res != null) {
+          if(res !== 'null') {
             AsyncStorage.mergeItem('notes', JSON.stringify(storedList))
               .then(_getAllObjects)
           } else {
@@ -62,7 +62,7 @@ export default function NoteScreen() {
     try {
       AsyncStorage.getItem('notes')
         .then((res) => {
-          if(res !== null) {
+          if(res !== 'null') {
             list = JSON.parse(res)
             setAllObjects(list.list);
           }
