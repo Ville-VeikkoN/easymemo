@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, Text, View, Button, AsyncStorage } from 'react-native';
+import { StyleSheet, Text, View, Button, AsyncStorage, Platform } from 'react-native';
 import * as Calendar from 'expo-calendar';
 import DatePicker from 'react-native-datepicker'
 
@@ -10,78 +10,63 @@ export default function MemoScreen() {
   const [endDate, setEndDate] = React.useState(new Date());
 
   useEffect(() => {
+
+    // Calendar.getCalendarsAsync()
+    //   .then(res => console.log(res))
+
     try{
-      AsyncStorage.getItem('calendarID')
-        .then(res => {
-          if(res == null) {
-            createCalendar();
-          }
-          setCalendarId(res);
-        })
-        .then(() => {
-          Calendar.requestPermissionsAsync()
+
+      Calendar.requestPermissionsAsync()
+      .then(res => {
+        if(res.granted) {
+          AsyncStorage.getItem('calendarID')
           .then(res => {
-            if(res.granted) {
-              Calendar.getCalendarsAsync()
-                .then(res => {
-                  console.log(res)
-                  // for(cal of res) {
-                  //   if(cal.title == 'My Calendar') {
-                  //     Calendar.deleteCalendarAsync(cal.id);
-                  //     console.log('deleted');
-                  //   }
-                  // }
-                });
+            console.log(typeof res)
+            if(res == null) {
+              createCalendar();
+            } else {
+              setCalendarId(res);
             }
           })
-        })
-        .then(() => {
+        }
+      })
 
-        })
+
+
     } catch(e) {
       console.log(e);
     }
 
   },[])
 
-  async function getCalendarEvents() {
-  }
-
   async function createCalendar() {
-    details = (
-      {
-        "allowsModications": true,
-        "color": "yellow",
-        "entityType": "event",
-        "source": {
-          "id": "220e5c20-eee3-406a-b1e0-cbd59b06ce66",
-          "name": "event_calendar",
-          "type": "local",
-        },
-        "sourceId": "220e5c20-eee3-406a-b1e0-cbd59b06ce66",
-        "title": "My Calendar",
-        "type": "local",
-        "name": "event_calendar",
-        "accessLevel": Calendar.CalendarAccessLevel.OWNER,
-        "ownerAccount": "local",
-        "isLocalAccount": true,
-      }
-    )
-    try {
-      let calendarID = await Calendar.createCalendarAsync(details);
-      AsyncStorage.setItem('calendarID', calendarID);
-      setCalendarId(calendarID);
-    } catch(error) {
-      console.log(error);
-    }
+    const defaultCalendarSource =
+      Platform.OS === 'ios'
+        ? await getDefaultCalendarSource()
+        : { isLocalAccount: true, name: 'Expo Calendar' };
+    const newCalendarID = await Calendar.createCalendarAsync({
+      title: 'Expo Calendar',
+      color: 'blue',
+      entityType: Calendar.EntityTypes.EVENT,
+      sourceId: defaultCalendarSource.id,
+      source: defaultCalendarSource,
+      name: 'internalCalendarName',
+      ownerAccount: 'personal',
+      accessLevel: Calendar.CalendarAccessLevel.OWNER,
+    });
+    AsyncStorage.setItem('calendarID', newCalendarID);
+    setCalendarId(newCalendarID);
+    console.log(newCalendarID)
   }
 
-  function getEvents() {
-    Calendar.getEventsAsync([calendarId], startDate, endDate)
-      .then(res => console.log(res))
+  async function getEvents() {
+    events = await Calendar.getEventsAsync([calendarId], startDate, endDate)
+    console.log(events)   
   }
 
   function addEvent() {
+    console.log(calendarId)
+
     details = (
       {
         'title': 'Event',
@@ -93,7 +78,9 @@ export default function MemoScreen() {
       title: 'my new event',
       startDate: new Date(),
       endDate: new Date(),
-      accessLevel: "default",
+      accessLevel: 'default',
+      notes: 'some notes',
+      alarms: [ { relativeOffset: -15 } ],
     })
   }
 
