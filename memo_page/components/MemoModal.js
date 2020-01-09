@@ -14,7 +14,6 @@ export default class MemoModal extends React.Component {
     alarm = this.props.memo.alarms[0];
     offset = alarm.relativeOffset * -1;
     stringToReturn = '';
-    console.log(offset % 1440 === 0);
     if(offset % 1440 === 0) {
       stringToReturn = 'alarm '+offset/1440+' days before';
     } else if(offset % 60 === 0) {
@@ -36,14 +35,13 @@ export default class MemoModal extends React.Component {
           hideModalContentWhileAnimating={true}
           backdropTransitionOutTiming={0}
           onBackdropPress={() => this.props.handleClose()}>
-          <Card title={memo.title} containerStyle={{backgroundColor: '#5edfff'}}>
+          <Card title={moment(new Date(memo.startDate)).format('DD.MM.YYYY')} containerStyle={{backgroundColor: '#5edfff'}}>
             <View style={styles.modalcontent}>
-              <Text style={{fontSize:20}}>{moment(new Date(memo.startDate)).format('YYYY-MM-DD')}</Text>
-              <Text style={{fontSize:20}}>{memo.notes}</Text>
-              {console.log(memo.alarms, ' ALARMS')}
-              {memo.alarms.length !== 0 ? this.getParsedAlarm() : <Text>No alarms</Text>}
+              <Text style={{fontSize:20, marginBottom:10}}>{memo.title}</Text>
+              <Text style={{fontSize:18, marginBottom:10}}>{memo.notes}</Text>
+              {memo.alarms.length !== 0 ? this.getParsedAlarm() : <Text >No alarms</Text>}
               <TouchableOpacity onPress={() => this.props.handleClose()}>
-                <Text style={{fontSize:18, color:'blue'}}>close</Text>
+                <Text style={{fontSize:18, color:'blue', marginTop:10}}>close</Text>
               </TouchableOpacity>
             </View>
           </Card>

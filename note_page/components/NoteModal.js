@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, ActivityIndicator, TouchableOpacity, FlatList, 
 import { Card, CheckBox } from 'react-native-elements';
 import Modal from 'react-native-modal';
 import moment from 'moment';
+import ColorPicker from './ColorPicker';
 
 export default class NoteModal extends React.Component {
 
@@ -21,10 +22,10 @@ export default class NoteModal extends React.Component {
           hideModalContentWhileAnimating={true}
           backdropTransitionOutTiming={0}
           onBackdropPress={() => this.props.handleClose()}>
-          <Card title={note.title} containerStyle={{backgroundColor: note.style.backgroundColor}}>
+          <Card title={moment(new Date(note.date)).format('DD.MM.YYYY')} containerStyle={{backgroundColor: note.style.backgroundColor}}>
             <View style={styles.modalcontent}>
-              <Text style={{fontSize:20}}>{moment(new Date(note.date)).format('YYYY-MM-DD')}</Text>
-              <Text style={{fontSize:20}}>{note.content}</Text>
+              <Text style={{fontSize:20, marginBottom:10}}>{note.title}</Text>
+              <Text style={{fontSize:18, marginBottom:10}}>{note.content}</Text>
               <TouchableOpacity onPress={() => this.props.handleClose()}>
                 <Text style={{fontSize:18, color:'blue'}}>close</Text>
               </TouchableOpacity>

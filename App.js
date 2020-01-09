@@ -30,7 +30,12 @@ const TabNavigator = createBottomTabNavigator({
         return <Ionicons name="md-calendar" size={20} />;
       }
     }
-  })
+  }),
+  tabBarOptions: {
+    style: {
+      backgroundColor: '#5edfff'
+    }
+  }
 }
 );
 

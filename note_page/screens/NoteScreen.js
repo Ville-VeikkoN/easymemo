@@ -6,8 +6,9 @@ import { Card } from 'react-native-elements';
 import Swipeout from 'react-native-swipeout';
 import { object } from 'prop-types';
 import NoteItem from '../NoteItem';
+import { Ionicons } from '@expo/vector-icons';
 
-export default function NoteScreen() {
+export default function NoteScreen(props) {
   /*
 
 
@@ -26,13 +27,13 @@ export default function NoteScreen() {
   });
 
   useEffect(() => {
-    // try {
-    //   AsyncStorage.clear()
-      AsyncStorage.getAllKeys()
-        .then(res => console.log(res))
-    // } catch(error) {
-    //   console.log(error);
-    // }
+    //  try {
+    //    AsyncStorage.clear()
+    //   AsyncStorage.getAllKeys()
+    //     .then(res => console.log(res))
+    //  } catch(error) {
+    //    console.log(error);
+    //  }
     _getAllObjects();
   }, [])
 
@@ -109,7 +110,6 @@ export default function NoteScreen() {
     tempAllObjects.splice(index,1,item);
     storedList.list = tempAllObjects;
     try {
-      console.log(storedList);
       AsyncStorage.mergeItem('notes',JSON.stringify(storedList))
         .then(_getAllObjects);
     } catch(error) {
@@ -146,23 +146,17 @@ export default function NoteScreen() {
 
   function handleDialogClose() {
     setDialogInfo({
-      ...showDialog,
+      ...dialogInfo,
       showDialog: false,
     });
   }
 
   return (
     <View style={styles.container}>
-      <Button title="Add" onPress={() => {
-        setDialogInfo({
-          showDialog: true,
-          editableNote: null
-        });
-      }}></Button>
       <FlatList
-          data={allObjects}
-          keyExtractor={item => item.title}
-          renderItem={({item}) => 
+        data={allObjects}
+        keyExtractor={item => item.title}
+        renderItem={({item}) => 
           <Swipeout right={swipeBtns(item)}
             autoClose={true}
             backgroundColor= 'transparent'>
@@ -183,8 +177,19 @@ export default function NoteScreen() {
               </Card>
             </TouchableOpacity>
           </Swipeout>
-          }
+        }
       />
+      <TouchableOpacity
+        activeOpacity={0.7}
+        onPress={() => {
+          setDialogInfo({
+            showDialog: true,
+            editableNote: null
+          });
+        }}
+        style={styles.TouchableOpacityStyle}>
+        <Ionicons name='md-add-circle' size={60} color='#3e64ff' />
+      </TouchableOpacity>
       {modalInfo.showModal && (
         <NoteModal 
           note={modalInfo.note} 
@@ -201,6 +206,13 @@ export default function NoteScreen() {
     </View>
   );
 }
+
+NoteScreen.navigationOptions = {
+  title: 'Notes',
+  headerStyle: {
+    backgroundColor: '#5edfff'
+  },
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -222,5 +234,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     alignContent: 'stretch',
+  },
+  TouchableOpacityStyle: {
+    position: 'absolute',
+    width: 50,
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    right: 30,
+    bottom: 30,
   },
 });

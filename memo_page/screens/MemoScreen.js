@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, Text, View, Button, AsyncStorage, Platform, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Button, AsyncStorage, Platform, TouchableOpacity, Image } from 'react-native';
 import * as Calendar from 'expo-calendar';
 import DatePicker from 'react-native-datepicker'
 import { FlatList } from 'react-native-gesture-handler';
@@ -7,13 +7,13 @@ import Swipeout from 'react-native-swipeout';
 import { Card } from 'react-native-elements';
 import MemoDialog from '../components/MemoDialog';
 import MemoModal from '../components/MemoModal';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
-
-export default function MemoScreen() {
+export default function MemoScreen(props) {
 
   const [calendarId, setCalendarId] = React.useState('');
-  const [startDate, setStartDate] = React.useState(new Date());
-  const [endDate, setEndDate] = React.useState(new Date());
+  const [startDate, setStartDate] = React.useState(new Date(new Date().setDate(new Date().getDate()-1)));
+  const [endDate, setEndDate] = React.useState(new Date(new Date().setDate(new Date().getDate()+1)));
   const [events, setEvents] = React.useState([]);
   const [showDialog, setShowDialog] = React.useState(false);
   const [modalInfo, setModalInfo] = React.useState({
@@ -22,7 +22,6 @@ export default function MemoScreen() {
   });
 
   useEffect(() => {
-
     // Calendar.getCalendarsAsync()
     //   .then(res => {
     //     for(cal of res) {
@@ -31,23 +30,24 @@ export default function MemoScreen() {
     //       }
     //     }
     //   })
-
-    Calendar.requestPermissionsAsync()
-    .then(res => {
-      if(res.granted) {
-        AsyncStorage.getItem('calendarID')
-        .then(res => {
-          if(res == null) {
-            createCalendar();
-          } else {
-            setCalendarId(res);
-            getEvents();
-          }
-        })
-      }
-    })
-
-  },[])
+    if(!calendarId) {
+      Calendar.requestPermissionsAsync()
+      .then(res => {
+        if(res.granted) {
+          AsyncStorage.getItem('calendarID')
+          .then(res => {
+            if(res == null) {
+              createCalendar();
+            } else {
+              setCalendarId(res);
+            }
+          })
+        }
+      })
+    } else {
+      getEvents();
+    }
+  },[calendarId])
 
   async function createCalendar() {
     const defaultCalendarSource =
@@ -66,7 +66,6 @@ export default function MemoScreen() {
     });
     AsyncStorage.setItem('calendarID', newCalendarID);
     setCalendarId(newCalendarID);
-    console.log(newCalendarID)
   }
 
   function getEvents() {
@@ -94,7 +93,6 @@ export default function MemoScreen() {
   };
 
   function addEvent(memo) {
-    console.log(memo)
     Calendar.createEventAsync(calendarId, {
       title: memo.title,
       startDate: memo.startDate,
@@ -104,6 +102,7 @@ export default function MemoScreen() {
       alarms: memo.alarm,
       allDay: memo.allDay,
     })
+    getEvents();
   }
 
   function deleteEvent(event) {
@@ -114,10 +113,9 @@ export default function MemoScreen() {
   function renderStartDatePicker() {
     return(
       <DatePicker
-        style={{width: 200}}
+        style={{width: 150}}
         date={startDate}
         mode="date"
-     //   format="DD-MM-YYYY"
         confirmBtnText="Confirm"
         cancelBtnText="Cancel"
         customStyles={{
@@ -141,10 +139,9 @@ export default function MemoScreen() {
   function renderEndDatePicker() {
     return(
       <DatePicker
-        style={{width: 200}}
+        style={{width: 150}}
         date={endDate}
         mode="date"
-      //  format="DD-MM-YYYY"
         confirmBtnText="Confirm"
         cancelBtnText="Cancel"
         customStyles={{
@@ -176,13 +173,21 @@ export default function MemoScreen() {
 
   return (
     <View style={styles.container}>
-      <Button title='press' onPress={() => getEvents()}></Button>
-      <Button title='add' onPress={() => {
-        setShowDialog(true);
-      }}></Button>
-      <View style={{display: 'flex',maxHeight: 50, flexDirection: 'row'}}>
-        {renderStartDatePicker()}
-        {renderEndDatePicker()}
+      <View style={styles.datePickersContainer}>
+        <View style = {styles.datePickerContainer}>
+          <Text>From</Text>
+          {renderStartDatePicker()}
+        </View>
+        <View style = {styles.datePickerContainer}>
+          <Text>To</Text>
+          {renderEndDatePicker()} 
+        </View>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => getEvents()}
+          style={{justifyContent:'flex-end'}}>
+          <MaterialCommunityIcons name='calendar-search' size={40} color='#3e64ff' />
+        </TouchableOpacity>
       </View>
       <FlatList
         data={events}
@@ -207,6 +212,14 @@ export default function MemoScreen() {
           </Swipeout>
         }
       />
+      <TouchableOpacity
+        activeOpacity={0.7}
+        onPress={() => {
+          setShowDialog(true);
+        }}
+        style={styles.TouchableOpacityStyle}>
+        <Ionicons name='md-add-circle' size={60} color='#3e64ff' />
+      </TouchableOpacity>
       {modalInfo.showModal && (
         <MemoModal 
           memo={modalInfo.memo} 
@@ -221,6 +234,13 @@ export default function MemoScreen() {
     </View>
   );
 }
+
+MemoScreen.navigationOptions = {
+  title: 'Memos',
+  headerStyle: {
+    backgroundColor: '#5edfff'
+  },
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -238,8 +258,27 @@ const styles = StyleSheet.create({
     minHeight: 44,
     flex: 1,
     flexDirection: 'column',
-  //  justifyContent: 'space-between',
     alignItems: 'center',
     alignContent: 'stretch',
   },
+  TouchableOpacityStyle: {
+    position: 'absolute',
+    width: 50,
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    right: 30,
+    bottom: 30,
+  },
+  datePickersContainer: {
+    flexDirection: 'row',
+    marginLeft:10,
+    marginRight:10,
+  },
+  datePickerContainer: {
+    flex:1,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingTop: 10,
+  }
 });
