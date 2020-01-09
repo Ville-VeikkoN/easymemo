@@ -15,7 +15,7 @@ export default function NoteScreen() {
 
 
   */
-  const [showDialog, setShowDialog] = React.useState({
+  const [dialogInfo, setDialogInfo] = React.useState({
     showDialog: false,
     editableNote: null
   });
@@ -28,8 +28,8 @@ export default function NoteScreen() {
   useEffect(() => {
     // try {
     //   AsyncStorage.clear()
-    //   AsyncStorage.getAllKeys()
-    //     .then(res => console.log(res))
+      AsyncStorage.getAllKeys()
+        .then(res => console.log(res))
     // } catch(error) {
     //   console.log(error);
     // }
@@ -44,7 +44,7 @@ export default function NoteScreen() {
       AsyncStorage.getItem('notes')
         .then(res => {
           storedList.list = list;
-          if(res !== 'null') {
+          if(res !== null) {
             AsyncStorage.mergeItem('notes', JSON.stringify(storedList))
               .then(_getAllObjects)
           } else {
@@ -62,7 +62,7 @@ export default function NoteScreen() {
     try {
       AsyncStorage.getItem('notes')
         .then((res) => {
-          if(res !== 'null') {
+          if(res !== null) {
             list = JSON.parse(res)
             setAllObjects(list.list);
           }
@@ -123,7 +123,7 @@ export default function NoteScreen() {
       color: 'green',
       backgroundColor: '#fff',
       onPress: () => {
-        setShowDialog({
+        setDialogInfo({
           showDialog: true,
           editableNote: item,
         })
@@ -145,7 +145,7 @@ export default function NoteScreen() {
   }
 
   function handleDialogClose() {
-    setShowDialog({
+    setDialogInfo({
       ...showDialog,
       showDialog: false,
     });
@@ -154,7 +154,7 @@ export default function NoteScreen() {
   return (
     <View style={styles.container}>
       <Button title="Add" onPress={() => {
-        setShowDialog({
+        setDialogInfo({
           showDialog: true,
           editableNote: null
         });
@@ -190,12 +190,12 @@ export default function NoteScreen() {
           note={modalInfo.note} 
           handleClose={handleModalClose}/>
       )}
-      {showDialog.showDialog && (
+      {dialogInfo.showDialog && (
         <NoteDialog 
           handleClose={handleDialogClose} 
           saveData={_storeData} 
-          visible={showDialog.showDialog}
-          editableNote={showDialog.editableNote}
+          visible={dialogInfo.showDialog}
+          editableNote={dialogInfo.editableNote}
           editData={_mergeItem}/>
       )}
     </View>
@@ -205,7 +205,7 @@ export default function NoteScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#ecfcff',
     alignItems: 'stretch',
     justifyContent: 'center',
   },

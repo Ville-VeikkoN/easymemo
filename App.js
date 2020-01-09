@@ -4,7 +4,7 @@ import React from 'react'
 import { createStackNavigator } from 'react-navigation-stack';
 import { Ionicons } from '@expo/vector-icons';
 import NoteScreen from './note_page/screens/NoteScreen'
-import MemoScreen from './memo_page/MemoScreen'
+import MemoScreen from './memo_page/screens/MemoScreen'
 
 const NoteNavigation = createStackNavigator({
   screen: { screen: NoteScreen },
