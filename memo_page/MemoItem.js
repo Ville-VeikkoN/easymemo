@@ -7,7 +7,6 @@ class MemoItem {
     this.alarm = alarm;
     this.allDay = allDay;
     this.date = date;
-
   }
 }
 

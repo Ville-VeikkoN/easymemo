@@ -9,13 +9,6 @@ import NoteItem from '../NoteItem';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function NoteScreen(props) {
-  /*
-
-
-      REACT-NATIVE-SWIPEOUT IS DEPRECATED, USE react-native-swipe-list-view
-
-
-  */
   const [dialogInfo, setDialogInfo] = React.useState({
     showDialog: false,
     editableNote: null
@@ -27,13 +20,6 @@ export default function NoteScreen(props) {
   });
 
   useEffect(() => {
-    //  try {
-    //    AsyncStorage.clear()
-    //   AsyncStorage.getAllKeys()
-    //     .then(res => console.log(res))
-    //  } catch(error) {
-    //    console.log(error);
-    //  }
     _getAllObjects();
   }, [])
 
@@ -67,20 +53,6 @@ export default function NoteScreen(props) {
             list = JSON.parse(res)
             setAllObjects(list.list);
           }
-          // for(key of res) {
-          //   AsyncStorage.getItem(key)
-          //     .then((item) => {
-          //       tempAllObjects.push(JSON.parse(item));
-          //       if(tempAllObjects.length == res.length) {
-          //         tempAllObjects.sort(function(a,b) {
-          //           if(a.date <  b.date) {
-          //             return -1;
-          //           }
-          //         })
-          //         setAllObjects(tempAllObjects);
-          //       }
-          //   })
-          // }
       });
     } catch(error) {
       console.log(error);

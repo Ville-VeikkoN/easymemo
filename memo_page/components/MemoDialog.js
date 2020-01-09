@@ -189,7 +189,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   alarmCheckbox: {
-   // justifyContent:'center',
     alignItems:'center',
     flexDirection:'row',
   },

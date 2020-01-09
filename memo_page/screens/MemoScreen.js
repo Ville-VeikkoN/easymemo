@@ -22,14 +22,6 @@ export default function MemoScreen(props) {
   });
 
   useEffect(() => {
-    // Calendar.getCalendarsAsync()
-    //   .then(res => {
-    //     for(cal of res) {
-    //       if(cal.title == 'Expo Calendar') {
-    //         Calendar.deleteCalendarAsync(cal.id)
-    //       }
-    //     }
-    //   })
     if(!calendarId) {
       Calendar.requestPermissionsAsync()
       .then(res => {
