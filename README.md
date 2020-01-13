@@ -22,6 +22,7 @@ To run the project:
 ```
 $ cd ../<your folder>
 $ git clone https://github.com/Ville-VeikkoN/easymemo.git
+$ npm install
 $ yarn
 $ yarn start
 
