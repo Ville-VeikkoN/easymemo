@@ -16,14 +16,8 @@ Project is created with:
 	
 ## Setup
 To run the project:
-  -clone project from github
-  -build and run it using expo and emulator or real device
-  
-OR
-
-Download .apk from:
-  -https://github.com/Ville-VeikkoN/easymemo/releases/tag/1.0.0
-  -install apk to your emulator or device
+  * clone project from github
+  * build and run it using expo and emulator or real device
 
 ```
 $ cd ../<your folder>
@@ -32,3 +26,10 @@ $ yarn
 $ yarn start
 
 ```
+
+  
+OR
+
+Download .apk from:
+  * https://github.com/Ville-VeikkoN/easymemo/releases/tag/1.0.0
+  * install apk to your emulator or device
